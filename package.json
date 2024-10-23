@@ -1,0 +1,23 @@
+{
+  "name": "i-love-tg-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "nodemon bot.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "install": "^0.13.0",
+    "nodemon": "^3.1.7",
+    "npm": "^10.9.0"
+  }
+}
