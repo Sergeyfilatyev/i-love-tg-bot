@@ -85,8 +85,8 @@ bot.action("send_message", async (ctx) => {
       {
         reply_markup: {
           inline_keyboard: [
-            [{ text: "Канал 1", url: "https://t.me/tststsyyu" }],
-            [{ text: "Канал 2", url: "https://t.me/trtrtrtryur" }],
+            [{ text: "Я люблю🧡", url: "https://t.me/+5F-DfZBzZXFlZWYy" }],
+            [{ text: "Я хочу🖤", url: "https://t.me/+_-cW4wAMnq8wZDgy" }],
             [{ text: "Я подписался", callback_data: "check_subscription" }],
             [{ text: "Вернуться в главное меню", callback_data: "main_menu" }],
           ],
