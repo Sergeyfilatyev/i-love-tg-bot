@@ -81,7 +81,7 @@ bot.action("send_message", async (ctx) => {
   } else {
     // Предлагаем подписаться на каналы
     ctx.reply(
-      "Пожалуйста, подпишитесь на 2 канала, чтобы отправить сообщение:",
+      "Пожалуйста, подпишитесь на оба канала, чтобы отправить сообщение:",
       {
         reply_markup: {
           inline_keyboard: [
@@ -145,7 +145,28 @@ bot.action("main_menu", (ctx) => {
 });
 
 // Обработка выбора канала для отправки сообщения
-bot.action(["choose_channel1", "choose_channel2"], (ctx) => {
+bot.action(["choose_channel1", "choose_channel2"], async (ctx) => {
+  // Проверяем подписку на каналы ещё раз
+  const subscribedToChannel1 = await isUserSubscribed(ctx, channel1);
+  const subscribedToChannel2 = await isUserSubscribed(ctx, channel2);
+
+  if (!subscribedToChannel1 || !subscribedToChannel2) {
+    ctx.reply(
+      "Вы больше не подписаны на 2 канала. Пожалуйста, подпишитесь снова, чтобы отправить сообщение:",
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "Я люблю🧡", url: "https://t.me/+5F-DfZBzZXFlZWYy" }],
+            [{ text: "Я хочу🖤", url: "https://t.me/+_-cW4wAMnq8wZDgy" }],
+            [{ text: "Я подписался", callback_data: "check_subscription" }],
+            [{ text: "Вернуться в главное меню", callback_data: "main_menu" }],
+          ],
+        },
+      }
+    );
+    return;
+  }
+
   const selectedChannel =
     ctx.callbackQuery.data === "choose_channel1" ? "Я люблю🧡" : "Я хочу🖤";
 
@@ -153,7 +174,7 @@ bot.action(["choose_channel1", "choose_channel2"], (ctx) => {
   userState[ctx.from.id] = { selectedChannel };
 
   ctx.reply(
-    "Пожалуйста, напишите ваше сообщение",
+    "Пожалуйста, напишите ваше сообщение ",
     Markup.inlineKeyboard([[Markup.button.callback("Отмена", "cancel")]])
   );
 });
@@ -176,6 +197,34 @@ bot.on("message", async (ctx) => {
 
   // Если пользователь находится в процессе отправки сообщения
   if (state && state.selectedChannel) {
+    // Проверяем подписку на каналы ещё раз
+    const subscribedToChannel1 = await isUserSubscribed(ctx, channel1);
+    const subscribedToChannel2 = await isUserSubscribed(ctx, channel2);
+
+    if (!subscribedToChannel1 || !subscribedToChannel2) {
+      ctx.reply(
+        "Вы больше не подписаны на оба канала. Пожалуйста, подпишитесь снова, чтобы отправить сообщение:",
+        {
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "Я люблю🧡", url: "https://t.me/+5F-DfZBzZXFlZWYy" }],
+              [{ text: "Я хочу🖤", url: "https://t.me/+_-cW4wAMnq8wZDgy" }],
+              [{ text: "Я подписался", callback_data: "check_subscription" }],
+              [
+                {
+                  text: "Вернуться в главное меню",
+                  callback_data: "main_menu",
+                },
+              ],
+            ],
+          },
+        }
+      );
+      // Очищаем состояние пользователя
+      delete userState[ctx.from.id];
+      return;
+    }
+
     const selectedChannel = state.selectedChannel;
 
     try {
@@ -184,7 +233,7 @@ bot.on("message", async (ctx) => {
 
       // Уведомляем пользователя
       await ctx.reply(
-        "Ваше сообщение отправлено администратору на рассмотрение 🧡",
+        "Ваше сообщение отправлено администратору на рассмотрение🧡",
         Markup.inlineKeyboard([
           [Markup.button.callback("Вернуться в главное меню", "main_menu")],
         ])
@@ -233,5 +282,6 @@ async function isUserSubscribed(ctx, channel) {
 bot.launch();
 console.log("Бот запущен");
 
+// Обработка сигналов завершения (можно оставить или удалить в зависимости от платформы)
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
