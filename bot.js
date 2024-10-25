@@ -10,6 +10,9 @@ const channel2 = process.env.CH2;
 const adminChatId = Number(process.env.CHAT_ID);
 const userState = {};
 
+bot.telegram.setMyCommands([
+  { command: "/start", description: "Перезапустить Бот" },
+]);
 // Функция для отображения главного меню
 function showMainMenu(ctx) {
   const isAdmin = ctx.from.id === adminChatId;
